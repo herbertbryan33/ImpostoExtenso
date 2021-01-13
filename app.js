@@ -11,62 +11,53 @@ const T = new Twitter({
 })
 
 T.stream('statuses/filter', {follow: '1248284868481556480'},  function(stream) {
-    stream.on('data', function(tweet) {
-      var postTexto = tweet.text
-      postTexto = postTexto.slice(3)
-      if(postTexto.indexOf('\n') == -1){
-        postTexto = postTexto.slice(3)
-        postTexto = extenso(postTexto, { mode: 'currency', currency: { type: 'BRL' } })
-        postTexto = postTexto.replace("de", "")
-        console.log(postTexto)
-
-      }     
-      else{
-        postTexto= postTexto.slice(0, postTexto.indexOf('\n'))
-
-        console.log(postTexto)
-        postTexto = extenso(postTexto, { mode: 'currency', currency: { type: 'BRL' } })
-        postTexto = postTexto.replace("de", "")
-        console.log(postTexto)
+  stream.on('data', function(tweet) {    
+    T.post('statuses/update', {in_reply_to_status_id: tweet.id_str, status: "@impostometrobot " + stringExtenso(tweet.text)}, (err, data, response) =>{
+      if(err){
+        console.log(err)
       }
-
-
-       T.post('statuses/update', {in_reply_to_status_id: tweet.id_str, status: "@impostometrobot " + postTexto}, (err, data, response) =>{
-         if(err){
-             console.log(err)
-         }
-    
-         else{
-            
-             console.log("foi")
-    
-             }
-     } )
-    });
-  
-    stream.on('error', function(error) {
-      console.log(error);
-    });
-  });
-
-T.stream('statuses/filter',{track: '@Impostoextenso teste'},  function(stream) {
-    stream.on('data', function(tweet){
-    T.post('statuses/update', {status: "foi "}, (err, data, response) =>{
-        if(err){
-            console.log(err)
-        }
-   
-        else{
-           
-            console.log("foi")
-   
-            }
-        })
-    
-    } )
-    stream.on('error', function(error) {
-        console.log(error);
-      })
-
+      else{
+      console.log("foi")
+      }
+    })
+  }) 
+  stream.on('error', function(error) {
+    console.log(error)
+  })
 })
+
+T.stream('statuses/filter',{track: '@Impostoextenso'},  function(stream) {
+  stream.on('data', function(tweet){
+    T.post('statuses/update', {status: "@" + tweet.user.screen_name + " " + stringExtenso(tweet.text.slice(15)), in_reply_to_status_id:tweet.id_str }, (err, data, response) =>{
+      if(err){
+        console.log(err)
+      }
+      else{
+        console.log(tweet.user.screen_name)
+      }
+    })
+    
+  })
+  stream.on('error', function(error) {
+    console.log(error)
+  })
+})
+
+
+function  stringExtenso(string){
+
+  var postTexto = string
+  console.log(postTexto.indexOf(',') +2)
+  postTexto= postTexto.slice(4, postTexto.indexOf(',') +3)
+  console.log(postTexto)
+  postTexto = extenso(postTexto, { mode: 'currency', currency: { type: 'BRL' } })
+  postTexto = postTexto.replace("de ", "")
+  console.log(postTexto)
+
+  return postTexto
+  
+
+
+}
+
 
