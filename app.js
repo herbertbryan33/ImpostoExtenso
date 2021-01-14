@@ -28,7 +28,7 @@ T.stream('statuses/filter', {follow: '1248284868481556480'},  function(stream) {
 
 T.stream('statuses/filter',{track: '@Impostoextenso'},  function(stream) {
   stream.on('data', function(tweet){
-    T.post('statuses/update', {status: "@" + tweet.user.screen_name + " " + stringExtenso(tweet.text.slice(15)), in_reply_to_status_id:tweet.id_str }, (err, data, response) =>{
+    T.post('statuses/update', {status: "@" + tweet.user.screen_name + " " + stringExtenso(tweet.text.slice(16)), in_reply_to_status_id:tweet.id_str }, (err, data, response) =>{
       if(err){
         console.log(err)
       }
@@ -48,7 +48,7 @@ function  stringExtenso(string){
 
   var postTexto = string
   console.log(postTexto.indexOf(',') +2)
-  postTexto= postTexto.slice(4, postTexto.indexOf(',') +3)
+  postTexto= postTexto.slice(3, postTexto.indexOf(',') +3)
   console.log(postTexto)
   postTexto = extenso(postTexto, { mode: 'currency', currency: { type: 'BRL' } })
   postTexto = postTexto.replace("de ", "")
